@@ -54,13 +54,17 @@ function getEmitter() {
          * @param {String} event
          */
         emit: function (event) {
+            let actionsOrder = [];
             while (event !== '') {
+                actionsOrder.push([]);
                 if (events.has(event)) {
                     events.get(event)
-                        .forEach(ev => ev.handler.call(ev.context));
+                        .forEach(ev => actionsOrder[0].push(ev));
                 }
                 event = event.substring(0, event.lastIndexOf('.'));
             }
+            actionsOrder.reverse();
+            actionsOrder.forEach(actions => actions.forEach(ev => ev.handler.call(ev.context)));
 
             return this;
         },
